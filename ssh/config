@@ -1,0 +1,6 @@
+Host git.cri.epita.fr
+	GSSAPIAuthentication yes
+
+Host ssh.cri.epita.fr
+	GSSAPIAuthentication yes
+	GSSAPIDelegateCredentials yes
