@@ -89,8 +89,11 @@ Color=202,208,212
 Color=179,185,188
 
 [General]
+Anchor=0.5,0.5
 Blur=true
 ColorRandomization=false
 Description=Moe-Dark
-Opacity=0.15
-Wallpaper=/home/julienb/Images/WallPaper/alena-aenami-way.png
+FillStyle=Tile
+Opacity=1
+Wallpaper=/home/julienb/Pictures/WallPaper/alena-aenami-bluehour-1k.jpg
+WallpaperOpacity=0.16

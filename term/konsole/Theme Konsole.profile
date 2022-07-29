@@ -6,7 +6,7 @@ TabColor=41,53,59,0
 UseFontLineChararacters=true
 
 [General]
-Name=Theme MoeDark
+Name=Theme Konsole
 Parent=FALLBACK/
 TerminalColumns=100
 
