@@ -1,3 +1,4 @@
+#!usr/bin/sh
 rectangles=" "
 
 SR=$(xrandr --query | grep ' connected' | grep -o '[0-9][0-9]*x[0-9][0-9]*[^ ]*')
