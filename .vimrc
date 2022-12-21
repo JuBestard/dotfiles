@@ -2,16 +2,18 @@
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'preservim/NERDTree' "File tree
-Plugin 'bling/vim-airline' "airline
-Plugin 'vim-airline/vim-airline-themes' "airline-themes
-Plugin 'airblade/vim-gitgutter' "Github modif shows on files
-Plugin 'tpope/vim-fugitive' "GitHub support
-Plugin 'rafi/awesome-vim-colorschemes' "Colorschemes
+Plugin 'preservim/NERDTree'
+Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'rafi/awesome-vim-colorschemes'
 Plugin 'tribela/vim-transparent'
-Plugin 'OmniSharp/omnisharp-vim'
-Plugin 'dense-analysis/ale'
+
+" autocompletion
 Plugin 'prabirshrestha/asyncomplete.vim'
+Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+Plugin 'prabirshrestha/vim-lsp'
+Plugin 'mattn/vim-lsp-settings'
 
 call vundle#end()
 "--------
@@ -19,105 +21,68 @@ call vundle#end()
 filetype indent plugin on
 syntax on
 
-set mouse=a "Enable mouse select
-set shiftround
-set number
-set spell
+set backspace=indent,eol,start
+set autoindent
 set expandtab
-set shiftwidth=4
 set softtabstop=4
-set tabstop=8
+set tabstop=4
 set smarttab
 set smartindent
 set cindent
-set backspace=eol,start,indent
+if has('mouse')
+    set mouse=a
+endif
+
+set number
+set laststatus=2
+set visualbell
+set t_vb=
+set wildmenu
+set showcmd
+set ignorecase
+set smartcase
+set shiftround
+set shiftwidth=4
+
 set clipboard=unnamedplus
-set belloff=all
+set encoding=utf-8
+
+
+set colorcolumn=80
+"set textwidth=80
+
+" autocomplete list options
+set completeopt=longest,menuone,popuphidden
+set completepopup=highlight:Pmenu,border:off
+" autocomplete suggestions menu colors
+highlight Pmenu ctermbg=gray
+highlight PmenuSel ctermbg=lightblue
+" use tab for autocomplete suggestions
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 
 "NERDTree------
-noremap <S-T> :NERDTreeToggle <cr>
+noremap <C-T> :NERDTreeToggle <cr>
 let NERDTreeShowHidden=1 "Show secret files
 let NERDTreeQuitOnOpen=1 "Quit NERDTree when open file
 "-------------
-
-"True color
-if has('termguicolors')
-    set termguicolors
-endif
-
+"
 "ColorScheme----
 set background=dark
-colorscheme onehalfdark
-let g:airline_theme='onehalfdark'
-"------------
+set termguicolors
+colorscheme onedark
+let g:airline_theme='onedark'
+"-----
 
-highlight Pmenu ctermbg=gray
-highlight PmenuSel ctermbg=lightblue
+"split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
-" Don't autoselect first omnicomplete option, show options even if there is only
-" one (so the preview documentation is accessible). Remove 'preview', 'popup'
-" and 'popuphidden' if you don't want to see any documentation whatsoever.
-" Note that neovim does not support `popuphidden` or `popup` yet:
-" https://github.com/neovim/neovim/issues/10996
-if has('patch-8.1.1880')
-    set completeopt=longest,menuone,popuphidden
-    " Highlight the completion documentation popup background/foreground the same as
-    " the completion menu itself, for better readability with highlighted
-    " documentation.
-    set completepopup=highlight:Pmenu,border:off
-else
-    set completeopt=longest,menuone,preview
-    " Set desired preview window height for viewing documentation.
-    set previewheight=5
-endif
-
-" Tell ALE to use OmniSharp for linting C# files, and no other linters.
-let g:ale_linters = { 'cs': ['OmniSharp'] }
-
-augroup omnisharp_commands
-    autocmd!
-
-    " Show type information automatically when the cursor stops moving.
-    " Note that the type is echoed to the Vim command line, and will overwrite
-    " any other messages in this space including e.g. ALE linting messages.
-    autocmd CursorHold *.cs OmniSharpTypeLookup
-
-    " The following commands are contextual, based on the cursor position.
-    autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osfu <Plug>(omnisharp_find_usages)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osfi <Plug>(omnisharp_find_implementations)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ospd <Plug>(omnisharp_preview_definition)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osd <Plug>(omnisharp_documentation)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osfx <Plug>(omnisharp_fix_usings)
-    autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
-    autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
-
-    " Navigate up and down by method/property/field
-    autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
-    autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
-    " Find all code errors/warnings for the current solution and populate the quickfix window
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
-    " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
-    autocmd FileType cs xmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
-    " Repeat the last code action performed (does not use a selector)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
-    autocmd FileType cs xmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
-
-    autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
-
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osnm <Plug>(omnisharp_rename)
-
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ossp <Plug>(omnisharp_stop_server)
-augroup END
-
-autocmd Filetype  {cs,py,c,cpp,h} call SetCSharpAutocompletion()
-function SetCSharpAutocompletion()
+autocmd Filetype {cs,py,c,cpp,h} call Completion()
+function Completion()
     inoremap {      {}<Left>
     inoremap {<CR>  <CR>{<CR>}<Esc>O
     inoremap {{     {
@@ -136,4 +101,20 @@ function SetCSharpAutocompletion()
         inoremap for<Space> for ()<Left>
         inoremap if<Space> if ()<Left>
         inoremap if<Tab> if ()<Left>
-    endfunction
+endfunction
+
+
+"exe code in C
+nnoremap <F3> :call RunCode()<CR>
+function RunCode()
+    if &ft == 'c'
+    w !gcc -Wall -Wextra -Werror -std=c99 -O1 -o main *.c && ./main && rm ./main
+    " w !make && make run
+  elseif &ft == 'python'
+    w !python %:p
+  elseif &ft == "cs"
+    w !dotnet run
+  else
+    w !make && make run
+  endif
+endfunction
