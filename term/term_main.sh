@@ -24,7 +24,7 @@ fi
 chosen=$(echo -e "$choices" | dmenu -i)
 
 case "$chosen" in
-    Configs) exec bash $DIRDOCS"/scripts/term_config.sh" ;;
+    Configs) exec bash $DIRDOCS"/dotfiles/term/term_config.sh" ;;
     Home) exec konsole --workdir $DIRHOME ;;
     Prog-Folder) exec konsole --workdir $DIRPROG ;;
     Root-Folder) exec konsole --workdir '/' ;;
