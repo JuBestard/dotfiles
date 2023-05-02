@@ -81,6 +81,22 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+"exe code in C
+nnoremap <F3> :call RunCode()<CR>
+function RunCode()
+    if &ft == 'c'
+    w !gcc -Wall -Wextra -Werror -std=c99 -O1 -o main *.c && ./main && rm ./main
+    " w !make && make run
+  elseif &ft == 'python'
+    w !python %:p
+  elseif &ft == "cs"
+    w !dotnet run
+  else
+    w !make && make run
+  endif
+endfunction
+
+
 autocmd Filetype {cs,py,c,cpp,h} call Completion()
 function Completion()
     inoremap {      {}<Left>
@@ -101,20 +117,4 @@ function Completion()
         inoremap for<Space> for ()<Left>
         inoremap if<Space> if ()<Left>
         inoremap if<Tab> if ()<Left>
-endfunction
-
-
-"exe code in C
-nnoremap <F3> :call RunCode()<CR>
-function RunCode()
-    if &ft == 'c'
-    w !gcc -Wall -Wextra -Werror -std=c99 -O1 -o main *.c && ./main && rm ./main
-    " w !make && make run
-  elseif &ft == 'python'
-    w !python %:p
-  elseif &ft == "cs"
-    w !dotnet run
-  else
-    w !make && make run
-  endif
-endfunction
+    endfunction
