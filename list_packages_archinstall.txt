@@ -1,3 +1,7 @@
 polybar
 zsh
-
+git
+firefox
+thunar
+nautilus
+pavucontrol
