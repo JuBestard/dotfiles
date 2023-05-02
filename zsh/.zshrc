@@ -29,8 +29,3 @@ add_commit()
 source /home/julienb/apps/zsh-z/zsh-z.plugin.zsh
 zstyle ':completion:*' menu select
 
-# opam configuration
-[[ ! -r /home/julienb/.opam/opam-init/init.zsh ]] || source /home/julienb/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-
-path+=/home/julienb/.cargo/bin
-export PATH
